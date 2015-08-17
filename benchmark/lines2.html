@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<!--
+<script src="d3.min.js"></script>
+-->
+<script>
+
+var margin = {top: 20, right: 80, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var color = d3.scale.category10();
+
+var parseDate = d3.time.format("%Y%m%d").parse;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var data = [{
+  name: "c3ad27d3", date: "2015-05-22T18:40:04+02:00", values: [
+    {bench: "comments"          , ips: 285510  , sd: 49760   , init_ips: 5953    , init_sd: 248     },
+    {bench: "escape"            , ips: 271976  , sd: 42852   , init_ips: 7200    , init_sd: 252     },
+    {bench: "noescape"          , ips: 301018  , sd: 48561   , init_ips: 7247    , init_sd: 179     },
+    {bench: "nontrim"           , ips: 179950  , sd: 26266   , init_ips: 5248    , init_sd: 196     },
+    {bench: "one"               , ips: 177467  , sd: 26572   , init_ips: 4983    , init_sd: 173     },
+    {bench: "perper"            , ips: 260975  , sd: 47597   , init_ips: 5069    , init_sd: 230     }
+  ]}, {
+  name: "702b41d6", date: "2015-06-02T14:22:23+02:00", values: [
+    {bench: "comments"          , ips: 283600  , sd: 44869   , init_ips: 5981    , init_sd: 321     },
+    {bench: "escape"            , ips: 255824  , sd: 40638   , init_ips: 7196    , init_sd: 184     },
+    {bench: "noescape"          , ips: 295769  , sd: 45156   , init_ips: 7256    , init_sd: 216     },
+    {bench: "nontrim"           , ips: 175071  , sd: 24627   , init_ips: 5146    , init_sd: 142     },
+    {bench: "one"               , ips: 176518  , sd: 24589   , init_ips: 5050    , init_sd: 167     },
+    {bench: "perper"            , ips: 264914  , sd: 41084   , init_ips: 5265    , init_sd: 173     }
+  ]}, {
+  name: "91233d02", date: "2015-06-03T20:40:28+02:00", values: [
+    {bench: "comments"          , ips: 284142  , sd: 48096   , init_ips: 5826    , init_sd: 206     },
+    {bench: "escape"            , ips: 269400  , sd: 39486   , init_ips: 7049    , init_sd: 213     },
+    {bench: "noescape"          , ips: 289171  , sd: 51778   , init_ips: 6943    , init_sd: 231     },
+    {bench: "nontrim"           , ips: 176765  , sd: 25296   , init_ips: 5015    , init_sd: 133     },
+    {bench: "one"               , ips: 175863  , sd: 24808   , init_ips: 5011    , init_sd: 82      },
+    {bench: "perper"            , ips: 267437  , sd: 41577   , init_ips: 5215    , init_sd: 163     }
+  ]}, {
+  name: "a0836ff7", date: "2015-06-03T20:59:04+02:00", values: [
+    {bench: "comments"          , ips: 289632  , sd: 46121   , init_ips: 5997    , init_sd: 100     },
+    {bench: "escape"            , ips: 267964  , sd: 40254   , init_ips: 7176    , init_sd: 239     },
+    {bench: "noescape"          , ips: 294969  , sd: 49093   , init_ips: 7130    , init_sd: 289     },
+    {bench: "nontrim"           , ips: 180609  , sd: 26448   , init_ips: 4818    , init_sd: 90      },
+    {bench: "one"               , ips: 181038  , sd: 25555   , init_ips: 5175    , init_sd: 112     },
+    {bench: "perper"            , ips: 270181  , sd: 43735   , init_ips: 5457    , init_sd: 162     }
+  ]}, {
+  name: "66235b7f", date: "2015-06-03T21:01:05+02:00", values: [
+    {bench: "comments"          , ips: 289367  , sd: 46553   , init_ips: 5909    , init_sd: 154     },
+    {bench: "escape"            , ips: 268219  , sd: 41213   , init_ips: 7072    , init_sd: 189     },
+    {bench: "noescape"          , ips: 293868  , sd: 49204   , init_ips: 7060    , init_sd: 290     },
+    {bench: "nontrim"           , ips: 176745  , sd: 26246   , init_ips: 4951    , init_sd: 154     },
+    {bench: "one"               , ips: 177794  , sd: 26753   , init_ips: 5076    , init_sd: 151     },
+    {bench: "perper"            , ips: 268673  , sd: 42648   , init_ips: 5270    , init_sd: 137     }
+  ]}, {
+  name: "17177954", date: "2015-06-07T14:49:32+02:00", values: [
+    {bench: "comments"          , ips: 285324  , sd: 50676   , init_ips: 5941    , init_sd: 235     },
+    {bench: "escape"            , ips: 264719  , sd: 42091   , init_ips: 7055    , init_sd: 262     },
+    {bench: "noescape"          , ips: 303245  , sd: 49852   , init_ips: 7182    , init_sd: 219     },
+    {bench: "nontrim"           , ips: 180677  , sd: 24707   , init_ips: 5024    , init_sd: 155     },
+    {bench: "one"               , ips: 176733  , sd: 26097   , init_ips: 5136    , init_sd: 173     },
+    {bench: "perper"            , ips: 270735  , sd: 43003   , init_ips: 5391    , init_sd: 184     }
+  ]}, {
+  name: "b4b89f1b", date: "2015-07-22T12:06:06+02:00", values: [
+    {bench: "comments"          , ips: 292307  , sd: 46352   , init_ips: 5725    , init_sd: 210     },
+    {bench: "escape"            , ips: 269955  , sd: 42446   , init_ips: 6955    , init_sd: 206     },
+    {bench: "noescape"          , ips: 300116  , sd: 48285   , init_ips: 7297    , init_sd: 194     },
+    {bench: "nontrim"           , ips: 180285  , sd: 24560   , init_ips: 5169    , init_sd: 166     },
+    {bench: "one"               , ips: 179373  , sd: 24870   , init_ips: 4884    , init_sd: 161     },
+    {bench: "perper"            , ips: 275038  , sd: 40937   , init_ips: 5298    , init_sd: 201     }
+  ]}, {
+  name: "40d8c6ef", date: "2015-07-24T18:34:45+02:00", values: [
+    {bench: "comments"          , ips: 292448  , sd: 45975   , init_ips: 5937    , init_sd: 177     },
+    {bench: "escape"            , ips: 262422  , sd: 44315   , init_ips: 6963    , init_sd: 171     },
+    {bench: "noescape"          , ips: 295414  , sd: 48791   , init_ips: 7212    , init_sd: 298     },
+    {bench: "nontrim"           , ips: 177150  , sd: 26235   , init_ips: 5056    , init_sd: 139     },
+    {bench: "one"               , ips: 172732  , sd: 28689   , init_ips: 5036    , init_sd: 207     },
+    {bench: "perper"            , ips: 267169  , sd: 45779   , init_ips: 5310    , init_sd: 153     }
+  ]}, {
+  name: "current", date: "2015-08-16T21:24:59-04:00", values: [
+    {bench: "comments"          , ips: 248763  , sd: 48840   , init_ips: 4818    , init_sd: 171     },
+    {bench: "escape"            , ips: 155214  , sd: 32676   , init_ips: 5475    , init_sd: 166     },
+    {bench: "noescape"          , ips: 264793  , sd: 52915   , init_ips: 5594    , init_sd: 173     },
+    {bench: "nontrim"           , ips: 122548  , sd: 23772   , init_ips: 4081    , init_sd: 228     },
+    {bench: "one"               , ips: 124521  , sd: 24414   , init_ips: 4028    , init_sd: 338     },
+    {bench: "perper"            , ips: 231929  , sd: 44044   , init_ips: 4299    , init_sd: 225     }
+]}];
+
+
+
+var x = d3.scale.ordinal()
+    .rangePoints([0, width])
+var y = d3.scale.linear()
+    .range([height, 0])
+
+var xf = function(d) { return d.bench; };
+var yf = function(v) { return v.ips; };
+var yff = function(v) { return d3.format("s")(v); };
+var srt = function(a,b) { return a.ips - b.ips;}
+window.onload = function() {
+  color.domain(data.map(function(c) { return c.name; }));
+    x.domain(data[0].values.map(xf)); // sort(srt)
+    y.domain([
+        d3.min(data, function(c) {
+          return d3.min(c.values, yf)
+        })
+        ,
+        d3.max(data, function(c) {
+          return d3.max(c.values, yf);
+        })
+      ]);
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .tickFormat(yff)
+      .orient("left");
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Iterations/Second");
+
+  var city = svg.selectAll(".city")
+      .data(data).enter().append("g").attr("class", "city");
+
+  var line = d3.svg.line()
+      //.interpolate("basis") //make it smooth
+      .x(function(d) { return x(d.bench); })
+      .y(function(d) { return y(d.ips); });
+
+  city.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.values); })
+      .style("stroke", function(d) { return color(d.name); });
+
+  city.append("text")
+      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+      .attr("transform", function(d) { return "translate(" + x(d.value.bench) + "," + y(d.value.ips) + ")"; })
+      .attr("x", 3)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.name; });
+}
+</script>
